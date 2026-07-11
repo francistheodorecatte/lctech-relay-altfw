@@ -1,6 +1,5 @@
-Alternative firmware for LC-Tech 4-channel relay modules
-See: https://github.com/nekromant/esphome-lctech-4chanel-modules
+Alternative firmware for LC-Tech ESP8266 relay board v2.3.
 
-Can be compiled with platform.io. 
+A precompiled firmware hex file is provided.
 
-Precompiled firmware.hex is also placed in this repo for your convenience.
+Building with build.sh requires SDCC.
