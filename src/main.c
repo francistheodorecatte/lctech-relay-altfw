@@ -73,7 +73,7 @@ void uart_loop() {
 				RELAY = 130; //51% PWM to reduce relay current draw
 				LOAD = 1;
 			}
-			printf("R1: %x\n", tmp(2]);
+			printf("R1: %x\n", tmp[2]);
 			break;
 		case 0x11:
 			RED = tmp[2] ? 1 : 0; //non-PWM pin on this board
@@ -129,7 +129,7 @@ void gets(char *tmp) {
 int main()
 {
 	uart_init(19200);
-	printf("\n\nLC-Tech CFW ready\n");
+	printf("\n\nLC-Tech CFW v1.0 ready\n");
 	/* Relay */
 	P15_PushPull_Mode;
 
