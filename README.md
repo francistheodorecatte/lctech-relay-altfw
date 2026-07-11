@@ -1,7 +1,8 @@
-Alternative firmware for LC-Tech ESP8266 relay board v2.3, which adds:\
-- Relay PWM to reduce hold-in current
-- LED control commands
-- Button feedback (requires polling on the ESP8266's end)
+Alternative firmware for LC-Tech ESP8266 relay board v2.3.
+- Firmware features:
+	- Relay PWM to reduce hold-in current
+	- LED control commands
+	- Button feedback (requires polling on the ESP8266's end)
 
 Building with build.sh requires SDCC, but a precompiled firmware hex file is provided.
 
