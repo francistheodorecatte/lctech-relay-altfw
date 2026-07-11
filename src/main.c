@@ -77,7 +77,7 @@ void uart_loop() {
 			RED = tmp[2] ? 1 : 0;
 			break;
 		case 0x12:
-			GREEN = tmp[2] ? 1: 0;
+			GREEN = tmp[2] ? 1 : 0;
 			break;
 		case 0x13:
 			PWM_BLUE = tmp[2];
