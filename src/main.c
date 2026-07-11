@@ -86,7 +86,7 @@ void uart_loop() {
 		case 0x13:
 			PWM_BLUE = tmp[2];
 			LOAD = 1;
-			printf("LED_BLU: %s\n", PWM_BLUE);
+			printf("LED_BLU: %x\n", PWM_BLUE);
 			break;
 		/* Pollin' ain't a good idea here */
 		case 0x21:
