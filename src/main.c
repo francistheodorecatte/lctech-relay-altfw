@@ -15,7 +15,6 @@ __bit BIT_TMP;
 #define PWM_RELAY PWM5L
 #define PWM_BLUE PWM2L
 
-
 #define BUTTON1 P01
 #define BUTTON2 P00
 
@@ -36,6 +35,27 @@ int putchar (int c)
     SBUF = c;
     while(TI==0);
 	return 0;
+}
+
+//timer2 watchdog interrupt routine
+void wd_isr(void) __interrupt(3)
+{
+    TH2 = 0xFC;
+    TL2 = 0x18;
+    TA = 0xAA;
+    WDCON |= SET_BIT6;
+}
+
+//setup timer2 as a watchdog handler
+void wdt_setup(void)
+{
+    TMOD |= 0x10;
+    TH2 = 0xFC;
+    TL2 = 0x18;
+    ET1 = 1;
+    EA = 1;
+    TA = 0xAA;
+    TR2 = 1;
 }
 
 /**
@@ -130,6 +150,9 @@ int main()
 {
 	uart_init(19200);
 	printf("\n\nLC-Tech CFW v1.0 ready\n");
+
+	wdt_setup();
+
 	/* Relay */
 	P15_PushPull_Mode;
 
