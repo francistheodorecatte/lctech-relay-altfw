@@ -124,7 +124,7 @@ void gets(char *tmp) {
 int main()
 {
 	uart_init(19200);
-	printf("\n\n\nHello world. I'm a hacky opensource firmware for LC-tech modules\n");
+	printf("\n\nLC-Tech CFW ready\n");
 	/* Relay */
 	P15_PushPull_Mode;
 
