@@ -4,7 +4,7 @@
 #include <nuvoton/Delay.h>
 #include <nuvoton/SFR_Macro.h>
 
-#define BIT_TMP
+__bit BIT_TMP;
 
 #define RELAY P15
 
@@ -81,7 +81,7 @@ void uart_loop() {
 			break;
 		case 0x13:
 			PWM_BLUE = tmp[2];
-			LOAD=1;
+			LOAD = 1;
 			break;
 		/* Pollin' ain't a good idea here */
 		case 0x21:
@@ -142,7 +142,7 @@ int main()
 	PWMPL = 255;
 	PWM_CLOCK_FSYS;
 	PWM_CLOCK_DIV_128;
-	PWM_EDGE_TYPE;
+	PM_EDGE_TYPE;
 	PWM3_P04_OUTPUT_ENABLE;
 	PWM5_P15_OUTPUT_ENABLE;
 
