@@ -1,5 +1,6 @@
 Alternative firmware for LC-Tech ESP8266 relay board v2.3.
 - Firmware features:
+	- Watchdog timer to reset the MCU if things go sideways
 	- Relay PWM to reduce hold-in current
 	- LED control commands
 	- Button feedback (requires polling on the ESP8266's end)
