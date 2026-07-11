@@ -64,24 +64,29 @@ void receive_packet(unsigned char *tmp)
 void uart_loop() {
 	unsigned char tmp[4];
 	receive_packet(tmp);
-	BLUE = 1;
 	switch(tmp[1]) {
 		case 1:
 			RELAY = tmp[2] ? 255 : 0; //100% PWM if payload is not 0
+			LOAD = 1;
 			if ( RELAY > 1) {
 				Timer0_Delay1ms(100); //wait 100ms for relay to stabilize
 				RELAY = 130; //51% PWM to reduce relay current draw
+				LOAD = 1;
 			}
+			printf("R1: %x\n", tmp(2]);
 			break;
 		case 0x11:
-			RED = tmp[2] ? 1 : 0;
+			RED = tmp[2] ? 1 : 0; //non-PWM pin on this board
+			printf("LED_RED: %x\n", RED);
 			break;
 		case 0x12:
-			GREEN = tmp[2] ? 1 : 0;
+			GREEN = tmp[2] ? 1 : 0; //non-PWM pin on this board
+			printf("LED_GRN: %x\n", GREEN);
 			break;
 		case 0x13:
 			PWM_BLUE = tmp[2];
 			LOAD = 1;
+			printf("LED_BLU: %s\n", PWM_BLUE);
 			break;
 		/* Pollin' ain't a good idea here */
 		case 0x21:
