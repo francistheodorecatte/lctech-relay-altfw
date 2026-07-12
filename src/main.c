@@ -49,16 +49,16 @@ void wd_isr(void) __interrupt(5)
 //setup timer2 as a watchdog handler
 void wdt_setup(void)
 {
-    T2MOD |= 0x70; //prescaler 1/512
+    T2MOD |= 0x70; //prescaler 1/512; assumes 16MHz clock!
     T2CON &= ~0x01; //auto-reload timer values
     /* 0x85EE split into low and high bytes (1s timer) */
     RCMP2H = 0x85;
     RCMP2L = 0xEE;
     TH2 = 0x85;
     TL2 = 0xEE;
-    EA = 1; // enable interrupts
+    set_EA; // enable interrupts
     EIE |= 0x80; //enable timer 2 interrupts
-    TR2 = 1; //timer 2 enable
+    set_TR2; //timer 2 enable
     TA = 0xAA; //unlock timed access
     TA = 0x55;
     WDCON |= 0x27; //enable 1.638s WDT
@@ -99,7 +99,7 @@ void receive_packet(unsigned char *tmp)
 	}
 }
 
-void uart_loop() {
+void uart_loop(void) {
 	unsigned char tmp[4];
 	receive_packet(tmp);
 	switch(tmp[1]) {
@@ -164,7 +164,7 @@ void gets(char *tmp) {
 	} while (*tmp++ != '\n');
 }
 
-int main()
+int main(void)
 {
 	uart_init(19200);
 	printf("\n\nLC-Tech CFW v1.1\n");
