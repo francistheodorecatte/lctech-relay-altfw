@@ -37,26 +37,32 @@ int putchar (int c)
 	return 0;
 }
 
-/* watchdog setup; TH2 and TL2 may need tweaking. */
+// watchdog setup
 //timer2 watchdog interrupt routine
-void wd_isr(void) __interrupt(3)
+void wd_isr(void) __interrupt(5)
 {
-    TH2 = 0xFC;
-    TL2 = 0x18;
     TA = 0xAA;
-    WDCON |= SET_BIT6;
+    TA = 0x55;
+    WDCON |= 0x10; //reset WDT
 }
 
-//setup timer2 as a watchdog handler
+//setup timer0 as a watchdog handler
 void wdt_setup(void)
 {
-    TMOD |= 0x10;
-    TH2 = 0xFC;
-    TL2 = 0x18;
-    ET1 = 1;
-    EA = 1;
-    TA = 0xAA;
-    TR2 = 1;
+    T2MOD |= 0x70; //prescaler 1/512
+    T2CON &= ~0x01; //auto-reload timer values
+    /* 0x85EE split into low and high bytes (1s timer) */
+    RCMP2H = 0x85;
+    RCMP2L = 0xEE;
+    TH2 = 0x85;
+    TL2 = 0xEE;
+    EA = 1; // enable interrupts
+    EIE |= 0x80; //enable timer 2 interrupts
+    TR2 = 1; //timer 2 enable
+    TA = 0xAA; //unlock timed access
+    TA = 0x55;
+    WDCON |= 0x27; //enable 1.638s WDT
+    if (WDCON & 0x08) { WDCON &= ~0x08;} //clear initial wdt flags
 }
 /* end watchdog setup */
 
