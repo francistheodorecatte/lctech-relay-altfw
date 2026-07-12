@@ -18,6 +18,6 @@ Then read the device config back from the dumped stock firmware:\
 And finally flash the custom firmware:\
 `nuvoprog program -t n76e003 -a ./firmware.hex -c @config.json`
 
-UART protocol uses 192000/8/n/1. Serial command protocol & example ESPHome config for the ESP-01 will be coming at some point... soon?
+UART config is 192000/8/n/1. Serial command protocol is documented in src/main.c. An example ESPHome config for the ESP-01 will be coming at some point... soon?
 
 Datasheet for the N76E003 is available [here](https://www.nuvoton.com/export/resource-files/DS_N76E003_EN_Rev1.08.pdf).

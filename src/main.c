@@ -4,7 +4,7 @@
 #include <nuvoton/Delay.h>
 #include <nuvoton/SFR_Macro.h>
 
-__bit BIT_TMP;
+__bit BIT_TMP; //SDCC work-around
 
 #define RELAY P15
 
@@ -37,6 +37,7 @@ int putchar (int c)
 	return 0;
 }
 
+/* watchdog setup; TH2 and TL2 may need tweaking. */
 //timer2 watchdog interrupt routine
 void wd_isr(void) __interrupt(3)
 {
@@ -57,11 +58,22 @@ void wdt_setup(void)
     TA = 0xAA;
     TR2 = 1;
 }
+/* end watchdog setup */
 
-/**
- *  Stock protocol
- *  Open relay:A0 01 01 A2
- *  Close relay:A0 01 00 A1
+/*
+ *  Serial protocol (following stock relay protocol)
+ *  Checksum (byte four) is the sum of the first three bytes.
+ *  If the checksum rolls over, add the carry back, e.g.: 1B1 -> B2
+ *  Open relay:    A0 01 01 A2
+ *  Close relay:   A0 01 00 A1
+ *  Red LED on:    A0 11 01 B2
+ *  Red LED off:   A0 11 00 B1
+ *  Green LED on:  A0 12 01 B3
+ *  Green LED off: A0 12 00 B2
+ *  Blue LED 100%: A0 13 FF B2
+ *  Blue LED 0%:   A0 13 00 B3
+ *  S1 Poll:       A0 21 00 C1
+ *  S2 Poll:       A0 22 00 C2
  */
 
 void receive_packet(unsigned char *tmp)
