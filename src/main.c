@@ -194,7 +194,6 @@ int main()
 	PWM3H = 0;
 	PWM5H = 0;
 
-	RED = 1;
 	PWMRUN = 1;
 
 	printf("ready\n");
