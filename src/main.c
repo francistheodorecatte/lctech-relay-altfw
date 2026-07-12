@@ -46,7 +46,7 @@ void wd_isr(void) __interrupt(5)
     WDCON |= 0x10; //reset WDT
 }
 
-//setup timer0 as a watchdog handler
+//setup timer2 as a watchdog handler
 void wdt_setup(void)
 {
     T2MOD |= 0x70; //prescaler 1/512
