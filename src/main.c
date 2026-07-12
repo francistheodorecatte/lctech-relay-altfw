@@ -149,7 +149,7 @@ void gets(char *tmp) {
 int main()
 {
 	uart_init(19200);
-	printf("\n\nLC-Tech CFW v1.0 ready\n");
+	printf("\n\nLC-Tech CFW v1.1\n");
 
 	wdt_setup();
 
@@ -184,6 +184,8 @@ int main()
 
 	RED = 1;
 	PWMRUN = 1;
+
+	printf("ready\n");
 	while (1)
 	{
 		uart_loop();
