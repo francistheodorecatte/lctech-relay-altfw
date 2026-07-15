@@ -20,85 +20,87 @@ __bit BIT_TMP; //SDCC work-around
 
 int getchar(void)
 {
-    UINT8 c;
-    while (!RI);
-    c = SBUF;
-    RI = 0;
-    return (c);
+	UINT8 c;
+	while (!RI);
+	c = SBUF;
+	RI = 0;
+	return (c);
 }
 
 int putchar (int c)
 {
 	if (c == '\n')
 		putchar('\r');
-    TI = 0;
-    SBUF = c;
-    while(TI==0);
+	TI = 0;
+	SBUF = c;
+	while(TI==0);
 	return 0;
 }
 
-// watchdog setup
+/* watchdog setup */
 //timer2 watchdog interrupt routine
 void wd_isr(void) __interrupt(5)
 {
-    TA = 0xAA;
-    TA = 0x55;
-    WDCON |= 0x10; //reset WDT
+	TA = 0xAA;
+	TA = 0x55;
+	WDCON |= 0x10; //reset WDT
 }
 
 //setup timer2 as a watchdog handler
 void wdt_setup(void)
 {
-    T2MOD |= 0x70; //prescaler 1/512; assumes 16MHz clock!
-    T2CON &= ~0x01; //auto-reload timer values
-    /* 0x85EE split into low and high bytes (1s timer) */
-    RCMP2H = 0x85;
-    RCMP2L = 0xEE;
-    TH2 = 0x85;
-    TL2 = 0xEE;
-    set_EA; // enable interrupts
-    EIE |= 0x80; //enable timer 2 interrupts
-    set_TR2; //timer 2 enable
-    TA = 0xAA; //unlock timed access
-    TA = 0x55;
-    WDCON |= 0x27; //enable 1.638s WDT
-    if (WDCON & 0x08) { WDCON &= ~0x08;} //clear initial wdt flags
+	T2MOD |= 0x70; //prescaler 1/512; assumes 16MHz clock!
+	T2CON &= ~0x01; //auto-reload timer values
+	/* 0x85EE split into low and high bytes (1s timer) */
+	RCMP2H = 0x85;
+	RCMP2L = 0xEE;
+	TH2 = 0x85;
+	TL2 = 0xEE;
+	set_EA; // enable interrupts
+	EIE |= 0x80; //enable timer 2 interrupts
+	set_TR2; //timer 2 enable
+	TA = 0xAA; //unlock timed access
+	TA = 0x55;
+	WDCON |= 0x27; //enable 1.638s WDT
+	if (WDCON & 0x08) { WDCON &= ~0x08;} //clear initial wdt flags
 }
 /* end watchdog setup */
 
 /*
- *  Serial protocol (following stock relay protocol)
- *  Checksum (byte four) is the sum of the first three bytes.
- *  If the checksum rolls over, add the carry back, e.g.: 1B1 -> B2
- *  Open relay:    A0 01 01 A2
- *  Close relay:   A0 01 00 A1
- *  Red LED on:    A0 11 01 B2
- *  Red LED off:   A0 11 00 B1
- *  Green LED on:  A0 12 01 B3
- *  Green LED off: A0 12 00 B2
- *  Blue LED 100%: A0 13 FF B2
- *  Blue LED 0%:   A0 13 00 B3
- *  S1 Poll:       A0 21 00 C1
- *  S2 Poll:       A0 22 00 C2
- */
+ * Serial protocol (following stock relay protocol)
+ * Checksum (byte four) is the sum of the first three bytes.
+ * If the checksum rolls over, add the carry back, e.g.: 1B1 -> B2
+ * Open relay:	A0 01 01 A2
+ * Close relay:	A0 01 00 A1
+ * Red LED on:	A0 11 01 B2
+ * Red LED off:	A0 11 00 B1
+ * Grn LED on:	A0 12 01 B3
+ * Grn LED off:	A0 12 00 B2
+ * Blu LED 100%:A0 13 FF B2
+ * Blu LED 0%:	A0 13 00 B3
+ * S1 Poll:	A0 21 00 C1
+ * S2 Poll:	A0 22 00 C2
+*/
 
 void receive_packet(unsigned char *tmp)
 {
 	unsigned char checksum;
 	tmp[0]=0;
 	while (1) {
-		do {
-			tmp[0] = getchar();
-		} while (tmp[0] != 0xA0);
-		tmp[1] = getchar();
-		tmp[2] = getchar();
-		tmp[3] = getchar();
-		checksum = tmp[0] + tmp[1] + tmp[2];
-		if (checksum == tmp[3])
-			break;
+		do { tmp[0] = getchar(); } while (tmp[0] != 0xA0);
+			tmp[1] = getchar();
+			tmp[2] = getchar();
+			tmp[3] = getchar();
+			checksum = tmp[0] + tmp[1] + tmp[2];
+			if (checksum == tmp[3]) { break; } else {
+				//print checksum errors
+				printf("err: %x != %x\n",checksum,tmp[3]);
+			}
 	}
 }
 
+//may be worth setting this up to run via the UART0 interrupt vector (4)
+//would allow feeding the watchdog to happen in the while loop instead
 void uart_loop(void) {
 	unsigned char tmp[4];
 	receive_packet(tmp);
