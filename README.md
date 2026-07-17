@@ -6,7 +6,7 @@ Alternative firmware for LC-Tech ESP8266 relay board v2.3 with Nuvoton N76E003 M
 	- Button feedback (requires polling on the ESP8266's end)
 
 **NOTE!!**
-Newer versions of this board ship with an MM32F0010A1T MCU, which is an ARM Cortex A0 chip, and is therefore *completely incompatible with this firmware!*
+Newer (clone?) assemblies of this board ship with an MM32F0010A1T MCU, which is an ARM Cortex A0 chip, and is therefore *completely incompatible with this firmware!*
 
 Building with build.sh requires SDCC, but a precompiled firmware hex file is provided.
 
